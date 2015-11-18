@@ -1,0 +1,5 @@
+# chkpass extension
+comment = 'argmax aggregate functions'
+default_version = '1.0'
+module_pathname = '$libdir/argmax'
+relocatable = true
