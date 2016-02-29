@@ -1,0 +1,5 @@
+# chkpass extension
+comment = 'argmax/argmin aggregate functions'
+default_version = '1.0'
+module_pathname = '$libdir/argm'
+relocatable = true
