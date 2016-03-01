@@ -100,6 +100,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 	              oldcontext,
 	              localcontext;
 	int           i;
+	int32         comparison_result;
 	
 	if (!AggCheckCallContext(fcinfo, &aggcontext))
 	{
@@ -143,6 +144,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 				state->keys[i].cmp_proc = 
 					lookup_type_cache(state->keys[i].type,
 					                  TYPECACHE_CMP_PROC)->cmp_proc;
+
 			/* Copy initial values */
 			argm_copy_datum(PG_ARGISNULL(i + 1),
 			                  PG_GETARG_DATUM(i + 1),
@@ -155,19 +157,23 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 		
 		oldcontext = MemoryContextSwitchTo(state->context);
 		
-		/* compare keys (but not payload)*/
+		/* compare keys (but not payload) lexicographically */
 		for (i = 1; i < state->key_count; i++)
 		{
-			if (
-				!PG_ARGISNULL(i + 1)
-				&&
-				DatumGetInt32(OidFunctionCall2Coll(
-					state->keys[i].cmp_proc,
-					PG_GET_COLLATION(),
-					PG_GETARG_DATUM(i + 1),
-					state->keys[i].value
-				)) * compareFunctionResultToAdvance > 0
-			)
+			if (PG_ARGISNULL(i + 1))
+				break;
+			
+			comparison_result = DatumGetInt32(OidFunctionCall2Coll(
+				state->keys[i].cmp_proc,
+				PG_GET_COLLATION(),
+				PG_GETARG_DATUM(i + 1),
+				state->keys[i].value
+			)) * compareFunctionResultToAdvance;
+			
+			if (comparison_result < 0)
+				break;
+			
+			if (comparison_result > 0)
 			{
 				for (i = 0; i < state->key_count; i++)
 					argm_copy_datum(PG_ARGISNULL(i + 1),

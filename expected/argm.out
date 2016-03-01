@@ -2,7 +2,6 @@
  * FUNCTIONAL TESTS
  */
 create extension if not exists argm;
-
 create table tbl as 
 select d,
 	i,
@@ -18,8 +17,12 @@ cross join (values
 	(2),
 	(3)
 ) grp (grp);
-
 analyze tbl;
-
 select grp, argmax(txt, i, d), argmin(array[txt], (i, d)) from tbl group by grp order by grp;
+ grp |         argmax          |          argmin           
+-----+-------------------------+---------------------------
+   1 | 1-11-10-2011-9999999999 | {1-11-03-2011-1111111111}
+   2 | 2-11-10-2011-9999999999 | {2-11-03-2011-1111111111}
+   3 | 3-11-10-2011-9999999999 | {3-11-03-2011-1111111111}
+(3 rows)
 
