@@ -1,0 +1,29 @@
+/*
+ * FUNCTIONAL TESTS
+ */
+create extension if not exists argm;
+NOTICE:  extension "argm" already exists, skipping
+create table tbl2 as 
+select d,
+	i,
+	grp::text || repeat('1', 10) txt,
+	grp
+from (
+	select date'2011-11-11' - generate_series(1, 8) d,
+		generate_series(1, 9) i
+	order by random()
+) _
+cross join (values
+	(1),
+	(2),
+	(3)
+) grp (grp);
+analyze tbl2;
+select grp, anyold(txt), sum(i) from tbl2 group by grp order by grp;
+ grp |   anyold    | sum 
+-----+-------------+-----
+   1 | 11111111111 | 360
+   2 | 21111111111 | 360
+   3 | 31111111111 | 360
+(3 rows)
+
