@@ -1,0 +1,61 @@
+{
+   "name": "Argm",
+   "abstract": "Argm postgresql extension: argmax/argmin and anyold aggregate functions",
+   "description": "This PostgreSQL extension proivide several aggregate functions that could be used for SQL queries simplification and speedup.",
+   "version": "1.0.0-rc.1",
+   "maintainer": "Alexey Bashtanov <bashtanov@imap.cc>",
+   "license": {
+      "PostgreSQL": "http://www.postgresql.org/about/licence"
+   },
+   "prereqs": {
+      "build": {
+         "requires": {
+            "PostgreSQL": "9.4.0"
+         },
+      },
+      "runtime": {
+         "recommends": {
+            "PostgreSQL": "9.4.6"
+         }
+      }
+   },
+   "provides": {
+     "argm": {
+       "file": "argm--1.0.sql",
+       "docfile": "README.md",
+       "version": "1.0.0-rc.1"
+     }
+   },
+   "release_status": "testing",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "aggregate function",
+      "aggregate",
+      "max",
+      "min",
+      "argmax",
+      "argmin",
+      "grouping",
+      "anyold",
+      "distinct",
+      "group by",
+      "distinct on",
+      "speedup",
+      "speed up"
+   ]
+   "resources": {
+      "homepage": "http://pgtap.org/",
+      "bugtracker": {
+         "web": "http://github.com/bashtanov/argm/issues",
+         "mailto": "bashtanov@imap.cc"
+      },
+      "repository": {
+        "url":  "https://github.com/bashtanov/argm.git",
+        "web":  "https://github.com/bashtanov/argm",
+        "type": "git"
+      }
+   },
+}
