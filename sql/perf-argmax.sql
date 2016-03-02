@@ -1,3 +1,5 @@
+begin;
+
 /* sql implementation of argmax*/
 \ir _argmax-sql.sql
 
@@ -22,3 +24,5 @@ explain analyze select * from tbl;
 explain analyze select distinct on (grp) grp, t from tbl order by grp, d desc;
 explain analyze select grp, sql_argmax(t, d) from tbl group by grp order by grp;
 explain analyze select grp, argmax(t, d) from tbl group by grp order by grp;
+
+rollback;

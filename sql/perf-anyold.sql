@@ -1,3 +1,5 @@
+begin;
+
 /* plpgsql implementation of argmax*/
 \ir _anyold-sql.sql
 
@@ -27,3 +29,5 @@ explain analyze select grp, grpname, sum(d) from tbl group by 1,2;
 explain analyze select grp, min(grpname), sum(d) from tbl group by 1;
 explain analyze select grp, sql_anyold(grpname), sum(d) from tbl group by 1;
 explain analyze select grp, anyold(grpname), sum(d) from tbl group by 1;
+
+rollback;

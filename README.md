@@ -90,6 +90,7 @@ GROUP BY foo
 
 # Installation
 
+The extension is compatible with PostgreSQL 9.4 and higher.
 To install the extension for your database cluster run the following command:
 ```
 make && sudo make install && make installcheck
@@ -102,3 +103,7 @@ To use the extension on particular database run the following SQL:
 CREATE EXTENSION argm;
 ```
 
+# Performance tests
+
+To compare the performance of the approaches listed above of one could execute
+`sql/perf-argmax.sql` and `sql/perf-anyold.sql` files.
