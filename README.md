@@ -3,7 +3,7 @@ This PostgreSQL extension proivide several aggregate functions
 that could be used for SQL queries simplification and speedup.
 
 ## Argmax and argmin
-```
+```SQL
 argmax(value, key_1, key_2, ...)
 argmin(value, key_1, key_2, ...)
 ```
@@ -20,13 +20,13 @@ Values could be of any PostgreSQL data type, while keys must be sortable.
 Return type is the same as value parameter type.
 
 Logically using these functions with GROUP BY clause
-```
+```SQL
 SELECT argmax(value, key_1, key_2)
 FROM some_table                   
 GROUP BY gr                       
 ```
 is equivalent to DISTINCT ON clause
-```
+```SQL
 SELECT DISTINCT ON (gr) value       
 FROM some_table                     
 ORDER BY gr,
@@ -47,7 +47,9 @@ but there are the following pros and cons:
 
 ## Anyold
 
-```anyold(value) ```
+```SQL
+anyold(value)
+```
 
 This function simply returns the first non-null value within the group. 
 Any PostgreSQL types are supported.
@@ -56,7 +58,7 @@ it and without calling any essential aggregate function. That is, the following
 queries are equivalent if `foo_details` is determined by `foo`:
 
 ### Grouping by both columns
-```
+```SQL
 SELECT foo,
        foo_details,
        sum(bar)
@@ -68,7 +70,7 @@ This approach often leads to cardinality misestimations resulting in suboptimal
 execution plans. Additionally there is an overhead in hashing/sorting 
 `foo_details` values while grouping by them.
 ### Using `min` function
-```
+```SQL
 SELECT foo,
        min(foo_details),
        sum(bar)
@@ -79,7 +81,7 @@ This requires a proper `min` function for the data type of foo_details. Also
 calculating a minimum of the values is still an overhead despite all the values 
 are equal.
 ### Using `anyold`
-```
+```SQL
 SELECT foo,
        anyold(foo_details),
        sum(bar)
@@ -92,14 +94,14 @@ GROUP BY foo
 
 The extension is compatible with PostgreSQL 9.4 and higher.
 To install the extension for your database cluster run the following command:
-```
+```bash
 make && sudo make install && make installcheck
 ```
 This requires `pg_config` from your PostgreSQL installation to be available
 in `$PATH`
 
 To use the extension on particular database run the following SQL:
-```
+```SQL
 CREATE EXTENSION argm;
 ```
 
