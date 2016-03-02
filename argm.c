@@ -1,7 +1,3 @@
-/*
- * TODO: write smth here
- */
-
 #include "postgres.h"
 #include "fmgr.h"
 #include "utils/datum.h"
