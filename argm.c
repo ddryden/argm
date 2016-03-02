@@ -160,18 +160,24 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 		/* compare keys (but not payload) lexicographically */
 		for (i = 1; i < state->key_count; i++)
 		{
-			if (PG_ARGISNULL(i + 1))
+			/* nulls last */
+			if (PG_ARGISNULL(i + 1) && !state->keys[i].is_null)
 				break;
 			
-			comparison_result = DatumGetInt32(OidFunctionCall2Coll(
-				state->keys[i].cmp_proc,
-				PG_GET_COLLATION(),
-				PG_GETARG_DATUM(i + 1),
-				state->keys[i].value
-			)) * compareFunctionResultToAdvance;
-			
-			if (comparison_result < 0)
-				break;
+			if (!PG_ARGISNULL(i + 1) && state->keys[i].is_null) {
+				/* nulls last */
+				comparison_result = 1;
+			} else {
+				comparison_result = DatumGetInt32(OidFunctionCall2Coll(
+					state->keys[i].cmp_proc,
+					PG_GET_COLLATION(),
+					PG_GETARG_DATUM(i + 1),
+					state->keys[i].value
+				)) * compareFunctionResultToAdvance;
+				
+				if (comparison_result < 0)
+					break;
+			}
 			
 			if (comparison_result > 0)
 			{
