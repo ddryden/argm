@@ -11,7 +11,7 @@
       "build": {
          "requires": {
             "PostgreSQL": "9.4.0"
-         },
+         }
       },
       "runtime": {
          "recommends": {
