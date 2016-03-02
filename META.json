@@ -45,7 +45,7 @@
       "distinct on",
       "speedup",
       "speed up"
-   ]
+   ],
    "resources": {
       "homepage": "http://pgtap.org/",
       "bugtracker": {
@@ -57,5 +57,5 @@
         "web":  "https://github.com/bashtanov/argm",
         "type": "git"
       }
-   },
+   }
 }
