@@ -11,7 +11,7 @@ argmin(value, key_1, key_2, ...)
 These functions pick the row with the highest/lowest keys combination
 within each group and return the corresponding values. Keys tuples are compared
 lexicographically, just like rows. Nulls are handled as unknown values. 
-See [PostgreSQL docs](http://www.postgresql.org/docs/current/static/functions-comparisons.html#ROW-WISE-COMPARISON)
+See [PostgreSQL docs](http://www.postgresql.org/docs/current/interactive/functions-comparisons.html#ROW-WISE-COMPARISON)
 for more info on row-wise comparison.
 If there are several lines with the same keys the result line and value will be 
 chosen arbitrarily.
