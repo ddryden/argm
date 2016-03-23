@@ -69,11 +69,7 @@ PG_FUNCTION_INFO_V1(anyold_finalfn);
 static void 
 argm_copy_datum(bool is_null, Datum src, ArgmDatumWithType *dest, bool free)
 {
-	/* 
-	 * reinvent datumFree;
-	 * for unknown reasons the built-in one is not available for linking
-	 */
-	if (free && !dest->typbyval)
+	if (free && !dest->typbyval && !dest->is_null)
 		pfree(DatumGetPointer(dest->value));
 	
 	if (is_null)
