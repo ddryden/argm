@@ -2,7 +2,7 @@
    "name": "Argm",
    "abstract": "Argm postgresql extension: argmax/argmin and anyold aggregate functions",
    "description": "This PostgreSQL extension proivide several aggregate functions that could be used for SQL queries simplification and speedup.",
-   "version": "1.0.0",
+   "version": "1.0.1",
    "maintainer": "Alexey Bashtanov <bashtanov@imap.cc>",
    "license": {
       "PostgreSQL": "http://www.postgresql.org/about/licence"
@@ -23,7 +23,7 @@
      "argm": {
        "file": "argm--1.0.sql",
        "docfile": "README.md",
-       "version": "1.0.0"
+       "version": "1.0.1"
      }
    },
    "release_status": "testing",
@@ -47,7 +47,7 @@
       "speed up"
    ],
    "resources": {
-      "homepage": "http://pgtap.org/",
+      "homepage": "http://github.com/bashtanov/argm",
       "bugtracker": {
          "web": "http://github.com/bashtanov/argm/issues",
          "mailto": "bashtanov@imap.cc"
