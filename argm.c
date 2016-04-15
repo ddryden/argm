@@ -29,8 +29,6 @@ typedef struct ArgmDatumWithType {
 } ArgmDatumWithType;
 
 typedef struct ArgmState {
-	MemoryContext      context;
-	
 	/* the first one is payload in fact, all the rest are keys to be sorted by */
 	ArgmDatumWithType *keys;
 	int                key_count;
@@ -89,8 +87,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 	Oid           type;
 	ArgmState    *state;
 	MemoryContext aggcontext,
-	              oldcontext,
-	              localcontext;
+	              oldcontext;
 	int           i;
 	int32         comparison_result;
 	
@@ -105,16 +102,10 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 		/* First time through --- initialize */
 		
 		/* Make a temporary context to hold all the junk */
-		localcontext = AllocSetContextCreate(aggcontext,
-											 "argm_transfn",
-											 ALLOCSET_DEFAULT_MINSIZE,
-											 ALLOCSET_DEFAULT_INITSIZE,
-											 ALLOCSET_DEFAULT_MAXSIZE);
-		oldcontext = MemoryContextSwitchTo(localcontext);
+		oldcontext = MemoryContextSwitchTo(aggcontext);
 		
 		/* Initialize the state variable*/
 		state = palloc(sizeof(ArgmState));
-		state->context = localcontext;
 		
 		state->key_count = PG_NARGS() - 1;
 		state->keys = palloc(sizeof(ArgmDatumWithType) * (state->key_count));
@@ -147,7 +138,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 	{
 		state = (ArgmState *) PG_GETARG_POINTER(0);
 		
-		oldcontext = MemoryContextSwitchTo(state->context);
+		oldcontext = MemoryContextSwitchTo(aggcontext);
 		
 		/* compare keys (but not payload) lexicographically */
 		for (i = 1; i < state->key_count; i++)
@@ -225,8 +216,7 @@ Datum anyold_transfn(PG_FUNCTION_ARGS)
 	Oid           type;
 	Datum         state;
 	MemoryContext aggcontext,
-	              oldcontext,
-	              localcontext;
+	              oldcontext;
 	int16         typlen;
 	bool          typbyval;
 	char          typalign;
@@ -242,14 +232,7 @@ Datum anyold_transfn(PG_FUNCTION_ARGS)
 		if (PG_ARGISNULL(1))
 			PG_RETURN_NULL();
 		/* First non-null value --- initialize */
-		
-		/* Make a temporary context to hold all the junk */
-		localcontext = AllocSetContextCreate(aggcontext,
-											 "anyold_transfn",
-											 ALLOCSET_DEFAULT_MINSIZE,
-											 ALLOCSET_DEFAULT_INITSIZE,
-											 ALLOCSET_DEFAULT_MAXSIZE);
-		oldcontext = MemoryContextSwitchTo(localcontext);
+		oldcontext = MemoryContextSwitchTo(aggcontext);
 		
 		type = get_fn_expr_argtype(fcinfo->flinfo, 1);
 		if (type == InvalidOid)
