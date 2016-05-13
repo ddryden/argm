@@ -29,7 +29,10 @@ typedef struct ArgmDatumWithType {
 } ArgmDatumWithType;
 
 typedef struct ArgmState {
-	/* the first one is payload in fact, all the rest are keys to be sorted by */
+	/* 
+	 * element 0 of this array is payload value
+	 * elements 1, 2, ... are keys to be sorted by
+	 */
 	ArgmDatumWithType *keys;
 	int                key_count;
 } ArgmState;
@@ -80,7 +83,12 @@ argm_copy_datum(bool is_null, Datum src, ArgmDatumWithType *dest, bool free)
 			dest->value = datumCopy(src, dest->typbyval, dest->typlen);
 	}
 }
-
+/*
+ * The function args are the following:
+ *   0 -- state (internal type)
+ *   1 -- payload
+ *   2, 3, ... -- keys
+ */
 static Datum
 argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 {
@@ -99,7 +107,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 	
 	if (PG_ARGISNULL(0))
 	{
-		/* First time through --- initialize */
+		/* No state, first time through --- initialize */
 		
 		/* Make a temporary context to hold all the junk */
 		oldcontext = MemoryContextSwitchTo(aggcontext);
@@ -110,6 +118,10 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 		state->key_count = PG_NARGS() - 1;
 		state->keys = palloc(sizeof(ArgmDatumWithType) * (state->key_count));
 
+		/* 
+		 * store the info about payload and keys (arguments 1 and 2, 3, ... respectively)
+		 * into state->keys ([0] and [1, 2, ...] respectively)
+		 */
 		for (i = 0; i < state->key_count; i++)
 		{
 			type = get_fn_expr_argtype(fcinfo->flinfo, i + 1);
@@ -122,7 +134,7 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 								&state->keys[i].typlen,
 								&state->keys[i].typbyval,
 								&state->keys[i].typalign);
-			/* We do not need a sorting proc for payload */
+			/* For keys, but not for payload, determine the sorting proc */
 			if (i != 0)
 				state->keys[i].cmp_proc = 
 					lookup_type_cache(state->keys[i].type,
@@ -140,11 +152,15 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 		
 		oldcontext = MemoryContextSwitchTo(aggcontext);
 		
-		/* compare keys (but not payload) lexicographically */
+		/* 
+		 * compare the stored keys (but not payload; that is, elements 1, 2, ... ) 
+		 * and the input keys (but not payload; that is, elements 2, 3, ... )
+		 * lexicographically
+		 */
 		for (i = 1; i < state->key_count; i++)
 		{
-			/* nulls last */
 			if (PG_ARGISNULL(i + 1) && !state->keys[i].is_null)
+				/* nulls last */
 				break;
 			
 			if (!PG_ARGISNULL(i + 1) && state->keys[i].is_null) {
@@ -164,6 +180,13 @@ argm_transfn_universal(PG_FUNCTION_ARGS, int32 compareFunctionResultToAdvance)
 			
 			if (comparison_result > 0)
 			{
+				/* 
+				 * if we are here it means that the input data was considered
+				 * to be "better" (i.e. more for argmax or less for argmin)
+				 * than the stored ones
+				 * 
+				 * thus copy the new payloads and the keys to the state
+				 */
 				for (i = 0; i < state->key_count; i++)
 					argm_copy_datum(PG_ARGISNULL(i + 1),
 					                PG_GETARG_DATUM(i + 1),
