@@ -1,3 +1,5 @@
+# Heavily influenced by https://github.com/aggregateknowledge/postgresql-hll/blob/master/.travis.yml
+
 language: c
 
 env:
@@ -7,6 +9,8 @@ env:
   - PGVERSION=9.6
 
 before_script:
+  - lsb_release -d
+  - apt-cache search postgresql-server-dev
   - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
   - sudo /etc/init.d/postgresql stop                         # Stop any running version of postgres
   - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
@@ -16,6 +20,8 @@ before_script:
 
 script: 
   - make
+  - sudo make install
+  - make installcheck
   - psql -c "create extension argm" argm_test
 
 
