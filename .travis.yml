@@ -6,7 +6,15 @@ env:
   - PGVERSION=9.3
   - PGVERSION=9.4
   - PGVERSION=9.5
-  - PGVERSION=9.6
+
+before_install:
+  apt:
+    sources:
+      - sourceline: 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
+        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+    packages:
+      - postgresql-$PGVERSION
+      - postgresql-server-dev-$PGVERSION
 
 before_script:
   - lsb_release -d
@@ -14,8 +22,6 @@ before_script:
   - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
   - sudo /etc/init.d/postgresql stop                         # Stop any running version of postgres
   - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
-  - sudo apt-get install postgresql-server-dev-$PGVERSION    # Required for building the extension
-  - sudo apt-get install postgresql-common
   - createdb argm_test
 
 script: 
