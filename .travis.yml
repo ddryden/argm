@@ -12,13 +12,13 @@ before_install:
     sources:
       - sourceline: 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
-    packages:
-      - postgresql-$PGVERSION
-      - postgresql-server-dev-$PGVERSION
 
 before_script:
   - lsb_release -d
   - apt-cache search postgresql-server-dev
+  - sudo apt-get update
+  - sudo apt-get install postgresql-$PGVERSION
+  - sudo apt-get install postgresql-server-dev-$PGVERSION
   - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
   - sudo /etc/init.d/postgresql stop                         # Stop any running version of postgres
   - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
