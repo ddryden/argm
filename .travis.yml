@@ -1,0 +1,21 @@
+language: c
+
+env:
+  - PGVERSION=9.3
+  - PGVERSION=9.4
+  - PGVERSION=9.5
+  - PGVERSION=9.6
+
+before_script:
+  - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
+  - sudo /etc/init.d/postgresql stop                         # Stop any running version of postgres
+  - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
+  - sudo apt-get install postgresql-server-dev-$PGVERSION    # Required for building the extension
+  - sudo apt-get install postgresql-common
+  - createdb argm_test
+
+script: 
+  - make
+  - psql -c "create extension argm" argm_test
+
+
