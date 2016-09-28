@@ -6,16 +6,17 @@ env:
   - PGVERSION=9.4
   - PGVERSION=9.5
 
-before_install:
-  apt:
-    sources:
-      - sourceline: 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
-        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+#before_install:
+#  apt:
+#    sources:
+#      - sourceline: 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
+#        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
 
 before_script:
-  - lsb_release -d
-  - apt-cache search postgresql-server-dev
+  - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  - echo 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update
+  - apt-cache search postgresql-server-dev
   - sudo apt-get install postgresql-$PGVERSION
   - sudo apt-get install postgresql-server-dev-$PGVERSION
   - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
