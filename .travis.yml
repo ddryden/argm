@@ -5,16 +5,11 @@ language: c
 env:
   - PGVERSION=9.4
   - PGVERSION=9.5
-
-#before_install:
-#  apt:
-#    sources:
-#      - sourceline: 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
-#        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+  - PGVERSION=9.6
 
 before_script:
   - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-  - echo 'http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' | sudo tee -a /etc/apt/sources.list
+  - echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update
   - apt-cache search postgresql-server-dev
   - sudo apt-get install postgresql-$PGVERSION
@@ -24,10 +19,8 @@ before_script:
   - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
   - createdb argm_test
 
-script: 
+script:
   - make
   - sudo make install
   - make installcheck
   - psql -c "create extension argm" argm_test
-
-
