@@ -4,19 +4,17 @@ language: c
 
 env:
   - PGVERSION=9.4
-  - PGVERSION=9.5
-  - PGVERSION=9.6
 
 before_script:
   - curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   - echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update
   - apt-cache search postgresql-server-dev
-  - sudo apt-get install postgresql-$PGVERSION
-  - sudo apt-get install postgresql-server-dev-$PGVERSION
-  - export PATH=/usr/lib/postgresql/$PGVERSION/bin:$PATH
+  - sudo apt-get install postgresql-${PGVERSION}
+  - sudo apt-get install postgresql-server-dev-${PGVERSION}
+  - export PATH=/usr/lib/postgresql/${PGVERSION}/bin:$PATH
   - sudo /etc/init.d/postgresql stop                         # Stop any running version of postgres
-  - sudo /etc/init.d/postgresql start $PGVERSION             # Start the version of PG that we want
+  - sudo /etc/init.d/postgresql start ${PGVERSION}             # Start the version of PG that we want
   - createdb argm_test
 
 script:
