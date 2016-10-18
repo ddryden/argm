@@ -1,6 +1,6 @@
 #!groovy
 
-pipeline{
+pipeline {
   stages {
     stage("build") {
       timeout(time: 5, units: "MINUTES"){
