@@ -26,4 +26,6 @@ script:
 after_failure:
   - find . -name regression.out -exec cat '{}' \;
   - find . -name regression.diffs -exec cat '{}' \;
+  - find . -name argm.out -exec cat '{}' \;
+  - find . -name anyold.out -exec cat '{}' \;
 
