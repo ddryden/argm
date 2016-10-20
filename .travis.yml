@@ -27,4 +27,5 @@ script:
 
 after_failure:
   - find . -name regression.out -exec cat '{}' \;
+  - find . -name regression.diffs -exec cat '{}' \;
 
