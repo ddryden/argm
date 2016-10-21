@@ -1,7 +1,9 @@
 /*
  * FUNCTIONAL TESTS
  */
-create extension if not exists argm;
+begin;
+
+create extension argm;
 
 create table tbl as 
 select d,
@@ -23,3 +25,4 @@ analyze tbl;
 
 select grp, argmax(txt, i, d), argmin(array[txt], (i, d)) from tbl group by grp order by grp;
 
+rollback;

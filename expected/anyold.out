@@ -1,8 +1,8 @@
 /*
  * FUNCTIONAL TESTS
  */
-create extension if not exists argm;
-NOTICE:  extension "argm" already exists, skipping
+begin;
+create extension argm;
 create table tbl2 as 
 select d,
 	i,
@@ -27,3 +27,4 @@ select grp, anyold(txt), sum(i) from tbl2 group by grp order by grp;
    3 | 31111111111 | 360
 (3 rows)
 
+rollback;

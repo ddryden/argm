@@ -1,7 +1,9 @@
 /*
  * FUNCTIONAL TESTS
  */
-create extension if not exists argm;
+begin;
+
+create extension argm;
 
 create table tbl2 as 
 select d,
@@ -23,3 +25,4 @@ analyze tbl2;
 
 select grp, anyold(txt), sum(i) from tbl2 group by grp order by grp;
 
+rollback;

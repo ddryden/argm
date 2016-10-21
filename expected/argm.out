@@ -1,7 +1,8 @@
 /*
  * FUNCTIONAL TESTS
  */
-create extension if not exists argm;
+begin;
+create extension argm;
 create table tbl as 
 select d,
 	i,
@@ -26,3 +27,4 @@ select grp, argmax(txt, i, d), argmin(array[txt], (i, d)) from tbl group by grp 
    3 | 3-11-10-2011-9999999999 | {3-11-03-2011-1111111111}
 (3 rows)
 
+rollback;
