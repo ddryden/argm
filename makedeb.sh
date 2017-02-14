@@ -16,6 +16,11 @@ if [ $# -eq 1 ]; then
 	VERSION=$1
 fi
 
+if [ "$BUILD_NUMBERx" == "x" ]; then
+	#%s is seconds since 1970-01-01 00:00:00 UTC
+	BUILD_NUMBER=date +%s
+fi 
+
 make
 mkdir tmpinstall
 /bin/mkdir -p "tmpinstall/usr/lib/postgresql/${VERSION}/lib"
