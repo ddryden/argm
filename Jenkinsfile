@@ -1,9 +1,11 @@
 #!groovy
 
 pipeline {
+  agent { label 'docker' }
   stages {
     stage("build") {
       timeout(time: 5, units: "MINUTES"){
+        checkout scm
         sh 'make build'
       }
     }
@@ -16,15 +18,17 @@ pipeline {
 
     stage("test") {
       timeout(time: 5, units: "MINUTES") {
-        sh 'make test'
+        sh 'make installcheck'
       }
     }
 
     stage("publish debian packages") {
       timeout(timeout(time: 5, units: "MINUTES") {
-        sh 'make publish'
+        sh 'makedeb.sh'
       }
     }
+
   }
 
 }
+
