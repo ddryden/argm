@@ -1,8 +1,18 @@
 #!/bin/sh
 # Crude debian package creation with FPM
 
+#Need fpm - and fpm needs (apt-get install ruby ruby-dev rubygems gcc make)
+if ! hash fpm 2>/dev/null; then
+	echo "Your missing fpm; attempting to install..."
+	sudo apt-get install ruby ruby-dev rubygems gcc make
+	sudo gem install --no-ri --no-rdoc fpm
+	if ! hash fpm 2>/dev/null; then
+		echo "Couldn't install fpm, ask an admin."
+	fi
+fi
+
 VERSION=`pg_config | grep VERSION | cut -d ' ' -f 4 | awk -F. '{print $1"."$2}'`
-if [ $# == 1 ]; then
+if [ $# -eq 1 ]; then
 	VERSION=$1
 fi
 
