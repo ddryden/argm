@@ -17,7 +17,7 @@ before_script:
   - sudo apt-get install -y postgresql-${PGVERSION}
   - sudo apt-get install -y postgresql-server-dev-${PGVERSION}
   - export PATH=/usr/lib/postgresql/${PGVERSION}/bin:$PATH
-  - pg_lsclusters
+  - sudo su postgres -c "pg_createcluster ${PGVERSION} main --start || true"
   - sudo /etc/init.d/postgresql start ${PGVERSION}
   - sudo su postgres -c "createuser --superuser --createdb --createrole `id -un`"
 
