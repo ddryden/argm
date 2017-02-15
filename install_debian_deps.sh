@@ -1,5 +1,15 @@
 #!/bin/sh
 
+#debug stuff
+whoami
+pwd
+id
+hostname
+uname -a
+ls -l
+lsb_release -d
+cat /etc/debian_version
+
 if [ -z "$PGVERSION" ]; then
 	PGVERSION=9.6
 fi
