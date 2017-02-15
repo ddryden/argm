@@ -23,7 +23,7 @@ pipeline {
     }
 
     stage("publish debian packages") {
-      timeout(timeout(time: 5, units: "MINUTES") {
+      timeout(time: 5, units: "MINUTES") {
         sh 'makedeb.sh'
       }
     }
