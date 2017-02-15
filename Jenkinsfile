@@ -1,34 +1,33 @@
-#!groovy
+node('docker') {
+    stage 'Checkout'
+    checkout([
+        $class: 'GitSCM',
+        branches: scm.branches,
+        doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+        extensions: scm.extensions + [[$class: 'CleanCheckout']],
+        userRemoteConfigs: scm.userRemoteConfigs
+    ])
 
-pipeline {
-  agent { label 'docker' }
-  stages {
-    stage("build") {
-      timeout(time: 5, units: "MINUTES"){
-        checkout scm
-        sh 'make build'
-      }
-    }
+    stage "Install deps"
+    sh "mkdir -p output"
+    sh "curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -"
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -sc`-pgdg main" | sudo tee -a /etc/apt/sources.list
+    sudo apt-get update
+    sudo /etc/init.d/postgresql stop
+    sudo apt-get purge -y postgresql-common postgresql-client-common
+    apt-cache search postgresql-server-dev
 
-    stage("install") {
-      timeout(time: 5, units: "MINUTES"){
-        sh 'sudo make install'
-      }
-    }
+    stage "Make build"
+    sh 'make build'
 
-    stage("test") {
-      timeout(time: 5, units: "MINUTES") {
-        sh 'make installcheck'
-      }
-    }
+    stage "install"
+    sh 'sudo make install'
 
-    stage("publish debian packages") {
-      timeout(time: 5, units: "MINUTES") {
-        sh 'makedeb.sh'
-      }
-    }
+    stage "Test"
+    sh 'make installcheck'
 
-  }
+    stage "Build Debian Package"
+    sh 'makedeb.sh'
 
 }
 
